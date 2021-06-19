@@ -57,4 +57,4 @@ This is an open-source code for our research work about multi-agent reinforcemen
 
 - Test:
  
- "python main_transfer.py --iftrain 0 iftransfer 0 -scenario "predator_prey" --method MADDPG-SFKT --prey-policy random"
+  "python main_transfer.py --iftrain 0 iftransfer 0 -scenario "predator_prey" --method MADDPG-SFKT --prey-policy random"
