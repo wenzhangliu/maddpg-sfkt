@@ -14,26 +14,26 @@ This is an open-source code for our research work about multi-agent reinforcemen
 ## Experiment 1: Cooperaitve box-pushing environment (source domain)
 
 - Train:
-
+  
   "python main_sfs.py --iftrain 1 --scenario "simple_push_box_multi" --method MADDPG-SFs --penalty -0.1"
   
 - Test:
-
+  
   "python main_sfs.py --iftrain 0 --scenario "simple_push_box_multi""
 
 ## Experiment 1: Cooperaitve box-pushing environment (target domain)
 
 - Stage 1: Knowledge transfer.
- 
- "python main_transfer.py --iftrain 0 --istransfer 1 --scenario "simple_push_box_multi" --penalty -1.0"
+  
+  "python main_transfer.py --iftrain 0 --istransfer 1 --scenario "simple_push_box_multi" --penalty -1.0"
 
 - Stage 2: Fine Tuning for optimal solutions.
- 
- "python main_transfer.py --iftrain 1 --istransfer 0 --scenario "simple_push_box_multi" --penalty -1.0"
+
+  "python main_transfer.py --iftrain 1 --istransfer 0 --scenario "simple_push_box_multi" --penalty -1.0"
 
 - Test:
  
- "python main_transfer.py --iftrain 0 --istransfer 0 --scenario "simple_push_box_multi""
+  "python main_transfer.py --iftrain 0 --istransfer 0 --scenario "simple_push_box_multi""
 
 ## Experiment 2: Non-monotonic predator-prey environment (source domain)
 
