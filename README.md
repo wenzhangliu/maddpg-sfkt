@@ -1,4 +1,4 @@
-# MADDPG-SFKT
+# Efficient Exploration for Multi-agent Reinforcement Learning via Transferable Successor Features
 Multi-agent reinforcement learning algorithms: MADDPG-SFs & MADDPG-SFKT
 
 This is an open-source code for our research work about multi-agent reinforcement leanring. 
