@@ -23,11 +23,9 @@ This is an open-source code for our research work about multi-agent reinforcemen
 
 ## Experiment 1: Cooperaitve box-pushing environment (target domain)
 
-- Stage 1: Knowledge transfer.
+- Train: Knowledge transfer and fine tune. 
   
   "python main_transfer.py --iftrain 0 --istransfer 1 --scenario "simple_push_box_multi" --penalty -1.0"
-
-- Stage 2: Fine Tuning for optimal solutions.
 
   "python main_transfer.py --iftrain 1 --istransfer 0 --scenario "simple_push_box_multi" --penalty -1.0"
 
@@ -47,13 +45,11 @@ This is an open-source code for our research work about multi-agent reinforcemen
 
 ## Experiment 2: Non-monotonic predator-prey environment (target domain)
 
-- Stage 1: Knowledge transfer.
+- Train: Knowledge transfer and fine tune.
   
   "python main_transfer.py --iftrain 0 --iftransfer 1 --scenario "predator_prey" --method MADDPG-SFKT --penalty1 -1.0 --penalty2 -1.0 --prey-policy random"
-
-- Stage 2: Fine Tuning for optimal solutions.
   
-  "python  .py --iftrain 1 iftransfer 0 -scenario "predator_prey" --method MADDPG-SFKT --penalty1 -1.0 --penalty2 -1.0 --prey-policy random"
+  "python main_transfer.py --iftrain 1 iftransfer 0 -scenario "predator_prey" --method MADDPG-SFKT --penalty1 -1.0 --penalty2 -1.0 --prey-policy random"
 
 - Test:
  
