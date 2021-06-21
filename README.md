@@ -7,7 +7,7 @@ This is an open-source code for our research work about multi-agent reinforcemen
 - Python 3.6
 
 # Dependencies
-- Tensorflow 1.5 + Gym
+- Tensorflow 1.15 + Gym
 
 # Usage
 
