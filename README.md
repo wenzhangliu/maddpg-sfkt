@@ -1,7 +1,7 @@
 # Efficient Exploration for Multi-agent Reinforcement Learning via Transferable Successor Features
 Multi-agent reinforcement learning algorithms: MADDPG-SFs & MADDPG-SFKT
 
-This is an open-source code for our research work about multi-agent reinforcement leanring. 
+This is an open-source code for our research work titled "Efficient Exploration for Multi-agent Reinforcement Learning via Transferable Successor Features". 
 
 # Requirements: 
 - Python 3.6
