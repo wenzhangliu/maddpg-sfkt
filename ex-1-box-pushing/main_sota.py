@@ -1,5 +1,5 @@
 import argparse
-import datetime
+
 
 def parse_args():
     parser = argparse.ArgumentParser("Reinforcement Learning experiments for multiagent environments")
@@ -8,7 +8,7 @@ def parse_args():
     parser.add_argument("--iftrain", type=int, default=0, help="train or not")
 
     parser.add_argument("--scenario", type=str, default="simple_push_box_multi", help="name of the scenario script")
-    parser.add_argument("--method", type=str, default="MAOPT", help="name of the scenario script")
+    parser.add_argument("--method", type=str, default="UneVEn", help="name of the scenario script")
 
     parser.add_argument("--len-episode", type=int, default=60, help="maximum episode length")
     parser.add_argument("--test-period", type=int, default=20, help="maximum episode length")
@@ -29,7 +29,7 @@ def parse_args():
     parser.add_argument("--n-agts", type=int, default=2)
     parser.add_argument("--penalty", type=float, default=-0.00)
     # file path for previous models and data
-    fold_name = "saved_model_" + parser.parse_args().method  # + datetime.datetime.now().strftime("%Y-%m%d-%H%M%S")
+    fold_name = "saved_model_" + parser.parse_args().method
     parser.add_argument("--data-dir", type=str, default=fold_name)
     parser.add_argument("--checkpoint-dir", type=str, default=fold_name + "/checkpoint_pre/")
     parser.add_argument("--log-dir", type=str, default="./" + fold_name + "/log_pre")
@@ -61,9 +61,7 @@ def run(arglist):
 
     arglist.n_agents = arglist.n_agts
     arglist.dim_o = env.observation_space[0].shape[0]
-    arglist.dim_a = 2 if ((arglist.method == "MADDPG") or (arglist.method == "ATT_MADDPG")) else 5
-    if arglist.method == "MAOPT":
-        arglist.dim_a = 2
+    arglist.dim_a = 2 if (arglist.method == "MADDPG") else 5
     arglist.dim_s = env.get_global_state_size()
     arglist.dim_phi = arglist.n_tasks + 1
     arglist.actor_net_h_unit = [256, 256]
@@ -71,7 +69,6 @@ def run(arglist):
     obs_shape = (arglist.n_agents, arglist.dim_o)
     act_shape = (arglist.n_agents, arglist.dim_a)
     state_shape = None
-    option_shape = None
 
     if arglist.method == "IQL":
         from module.learner import independent_q as RL_model
@@ -80,31 +77,31 @@ def run(arglist):
     elif (arglist.method == "VDN") or (arglist.method == "QMIX"):
         from module.learner import vdn as RL_model
         from module.run import train_mix as train
-        reward_shape = (1, )
-        state_shape = (arglist.dim_s, )
-    elif (arglist.method == "ATT_MADDPG"):
-        from module.learner import att_maddpg as RL_model
-        from module.run import train_att_maddpg as train
-        reward_shape = (arglist.n_agents,)
-    elif (arglist.method == "MAOPT"):
-        from module.learner import maopt_sro as RL_model
-        from module.run import train_maopt as train
+        reward_shape = (1,)
+        state_shape = (arglist.dim_s,)
+    elif arglist.method == "UneVEn":
+        from module.learner import uneven as RL_model
+        from module.run import train_uneven as train
+        arglist.n_related_task = 3
+        obs_shape = (arglist.n_agents, arglist.dim_o)
         act_shape = (arglist.n_agents, arglist.dim_a)
-        reward_shape = (arglist.n_agents,)
-        option_shape = (arglist.n_agents, arglist.n_agents)
+        reward_shape = (1,)
+        feature_shape = (arglist.dim_phi,)
+        policy_embedding_shape = (arglist.n_related_task+1, arglist.dim_phi,)
     else:
         from module.learner import maddpg as RL_model
         from module.run import train_maddpg as train
-        reward_shape = (arglist.n_agents, )
+        reward_shape = (arglist.n_agents,)
 
-    if arglist.method == "MAOPT":
-        from module import memory_maopt as memory
+    if arglist.method == "UneVEn":
+        from module import memory_uneven as memory
         replay_buffers = memory.Memory(limit=arglist.buffer_size,
                                        observation_shape=obs_shape,
                                        action_shape=act_shape,
                                        reward_shape=reward_shape,
-                                       option_shape=option_shape,
-                                       state_shape=state_shape)
+                                       feature_shape=feature_shape,
+                                       policy_embedding_shape=policy_embedding_shape
+                                       )
     else:
         from module import memory as memory
         replay_buffers = memory.Memory(limit=arglist.buffer_size,
@@ -114,22 +111,12 @@ def run(arglist):
                                        state_shape=state_shape
                                        )
 
-    marl_model = [RL_model.agent_model(args=arglist, mas_label=arglist.method+"_agt_"+str(i)+"_")
+    marl_model = [RL_model.agent_model(args=arglist, mas_label=arglist.method + "_agt_" + str(i) + "_")
                   for i in range(arglist.n_agents)]
 
-    # successor representation option model
-    if (arglist.method == "MAOPT"):
-        sro_model = RL_model.option_model_SRO(args=arglist, sro_label="SRO_")
-
-    if (arglist.method == "MAOPT"):
-        Trainer = train.Train_engine(MAS=marl_model,
-                                     SRO=sro_model,
-                                     Memorys=replay_buffers,
-                                     args=arglist)
-    else:
-        Trainer = train.Train_engine(MAS=marl_model,
-                                     Memorys=replay_buffers,
-                                     args=arglist)
+    Trainer = train.Train_engine(MAS=marl_model,
+                                 Memorys=replay_buffers,
+                                 args=arglist)
 
     Trainer.run(env=env,
                 len_episodes=arglist.len_episode,
@@ -138,7 +125,6 @@ def run(arglist):
                 model_path=arglist.checkpoint_dir,
                 log_path=arglist.log_dir,
                 is_Train=arglist.iftrain)
-
 
 if __name__ == '__main__':
     arglist = parse_args()
