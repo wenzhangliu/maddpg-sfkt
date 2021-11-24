@@ -47,12 +47,21 @@ def run(arglist):
         act_adv_shape = (arglist.n_agents - 1, arglist.dim_a)
         reward_shape = (arglist.n_agents,)
         option_shape = (arglist.n_agents - 1, arglist.n_agents - 1)
+    elif (arglist.method == "UneVEn"):
+        from module.learner import uneven as RL_model
+        from module.run import train_uneven as train
+        arglist.n_related_task = 3
+        obs_shape = (arglist.n_agents, arglist.dim_o)
+        act_shape = (arglist.n_agents, arglist.dim_a)
+        reward_shape = (1,)
+        feature_shape = (arglist.dim_phi,)
+        policy_embedding_shape = (arglist.n_related_task+1, arglist.dim_phi,)
     else:
         from module.learner import maddpg as RL_model
         from module.run import train_maddpg as train
         reward_shape = (arglist.n_agents, )
 
-    if arglist.method == "MAOPT":
+    if (arglist.method == "MAOPT"):
         from module import memory_maopt as memory
         replay_buffers = memory.Memory(limit=arglist.buffer_size,
                                        observation_shape=obs_shape,
@@ -61,6 +70,15 @@ def run(arglist):
                                        reward_shape=reward_shape,
                                        option_shape=option_shape,
                                        state_shape=state_shape)
+    elif (arglist.method == "UneVEn"):
+        from module import memory_uneven as memory
+        replay_buffers = memory.Memory(limit=arglist.buffer_size,
+                                       observation_shape=obs_shape,
+                                       action_shape=act_shape,
+                                       reward_shape=reward_shape,
+                                       feature_shape=feature_shape,
+                                       policy_embedding_shape=policy_embedding_shape
+                                       )
     else:
         from module import memory as memory
         replay_buffers = memory.Memory(limit=arglist.buffer_size,
