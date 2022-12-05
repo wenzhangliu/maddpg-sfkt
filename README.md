@@ -13,6 +13,8 @@ This is an open-source code for our research work titled "Efficient Exploration 
 
 ## Experiment 1: Cooperaitve box-pushing environment (source domain)
 
+As introduced in the paper, some source models with basic tasks should be pre-trained in source domain.
+
 - Train:
   
   "python main_sfs.py --iftrain 1 --scenario "simple_push_box_multi" --method MADDPG-SFs --penalty -0.1"
@@ -34,6 +36,8 @@ This is an open-source code for our research work titled "Efficient Exploration 
   "python main_transfer.py --iftrain 0 --istransfer 0 --scenario "simple_push_box_multi""
 
 ## Experiment 2: Non-monotonic predator-prey environment (source domain)
+
+As introduced in the paper, some source models with basic tasks should be pre-trained in source domain.
 
 - Train:
   
