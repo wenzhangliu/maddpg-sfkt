@@ -17,11 +17,13 @@ As introduced in the paper, some source models with basic tasks should be pre-tr
 
 - Train:
   
-  "python main_sfs.py --iftrain 1 --scenario "simple_push_box_multi" --method MADDPG-SFs --penalty -0.1"
+$ python main_sfs.py --iftrain 1 --scenario "simple_push_box_multi" --method MADDPG-SFs --id-task 0
   
 - Test:
   
-  "python main_sfs.py --iftrain 0 --scenario "simple_push_box_multi""
+$ python main_sfs.py --iftrain 0 --scenario "simple_push_box_multi" --id-task 0"
+
+is-task: -1, 0, 1, 2
 
 ## Experiment 1: Cooperaitve box-pushing environment (target domain)
 
